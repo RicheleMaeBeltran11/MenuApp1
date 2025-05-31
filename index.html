@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Breakfast Menu</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        .header {
+            background-color: #e5f3ff;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .module {
+            background-color: #ffffc2;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .step-info {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-left: 5px solid #0077b6;
+            font-size: 0.95em;
+        }
+
+        .item {
+            background-color: #006666;
+            color: white;
+            padding: 10px;
+            margin-bottom: 2px;
+        }
+
+        .desc {
+            background-color: #f2f2f2;
+            padding: 10px;
+            font-style: italic;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .result-count {
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .sub-section {
+            background-color: #eef;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .sub-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!--<div class="header">Study Guide in IPT 101 (Integrative Programming and Technologies)</div>
+    <div class="module">Module 7: Data Mapping and Exchange</div>-->
+    <!-- STEP A -->
+    <div class="section">
+        <div class="module">Step A: All Food Items</div>
+        <!--<div class="step-info">Loaded all food items from XML.</div>-->
+        <div class="result-count" id="resultCountA"></div>
+        <div id="stepA"></div>
+    </div>
+
+    <!-- STEP B -->
+    <div class="section">
+        <div class="module">Step B: Price > $5.00</div>
+        <!--<div class="step-info">Filtered from Step A: foods with <strong>price > $5.00</strong></div>-->
+        <div class="result-count" id="resultCountB"></div>
+        <div id="stepB"></div>
+    </div>
+
+    <!-- STEP C -->
+    <div class="section">
+        <div class="module">Step C: Foods with Calories ≤ 700</div>
+        <!--<div class="step-info"> From Step A: foods with <strong>calories ≤ 700</strong> (any price)</div>-->
+        <!--<div class="sub-section">
+            <div class="sub-title">Step C.1: From Step B (Price > $5.00 and Calories ≤ 700)</div>
+            <div class="result-count" id="resultCountC1"></div>
+            <div id="stepC1"></div>
+        </div>-->
+
+        <div class="result-count" id="resultCountC2"></div>
+        <div id="stepC2"></div>
+
+        <!--<div class="sub-section">-->
+        <!--<div class="sub-title">Step C.From Step A (Calories ≤ 700)</div>-->
+        <!--</div>-->
+    </div>
+
+    <script>
+        let foodsData = [];
+
+        fetch('menu.xml')
+            .then(response => response.text())
+            .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+            .then(data => {
+                const foods = data.getElementsByTagName('food');
+
+                // Step A: Load all food items
+                for (let food of foods) {
+                    const name = food.getElementsByTagName('name')[0].textContent;
+                    const price = parseFloat(food.getElementsByTagName('price')[0].textContent.replace('$', ''));
+                    const description = food.getElementsByTagName('description')[0].textContent;
+                    const calories = parseInt(food.getElementsByTagName('calories')[0].textContent);
+                    foodsData.push({ name, price, description, calories });
+                }
+
+                // Display Step A
+                const stepADiv = document.getElementById('stepA');
+                document.getElementById('resultCountA').innerText = `Showing ${foodsData.length} food item(s) from Step A.`;
+                foodsData.forEach(item => {
+                    stepADiv.innerHTML += `
+                                <div class="item">${item.name} - ${item.calories} cal</div>
+                                <div class="desc">${item.description} ($${item.price.toFixed(2)})</div>
+                            `;
+                });
+
+                // Step B: Filter price > $5.00
+                const stepB = foodsData.filter(item => item.price > 5.00);
+                const stepBDiv = document.getElementById('stepB');
+                document.getElementById('resultCountB').innerText = `Showing ${stepB.length} food item(s) from Step B.`;
+                stepB.forEach(item => {
+                    stepBDiv.innerHTML += `<div class="item">${item.name}</div>`;
+                });
+
+                //// Step C.1: From Step B, calories ≤ 700
+                //const stepC1 = stepB.filter(item => item.calories <= 700);
+                //const stepC1Div = document.getElementById('stepC1');
+                //document.getElementById('resultCountC1').innerText = `Showing ${stepC1.length} food item(s) from Step C.1.`;
+                //stepC1.forEach(item => {
+                //    stepC1Div.innerHTML += `
+                //            <div class="item">${item.name} - ${item.calories} cal</div>
+                //            <div class="desc">${item.description} ($${item.price.toFixed(2)})</div>
+                //        `;
+                //});
+
+                // Step C. From Step A, calories ≤ 700
+                const stepC2 = foodsData.filter(item => item.calories <= 700);
+                const stepC2Div = document.getElementById('stepC2');
+                document.getElementById('resultCountC2').innerText = `Showing ${stepC2.length} food item(s) from Step C.`;
+                stepC2.forEach(item => {
+                    stepC2Div.innerHTML += `
+                                <div class="item">${item.name}cal</div>
+                            `;
+                });
+            });
+    </script>
+
+</body>
+</html>
