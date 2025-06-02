@@ -1,103 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Breakfast Menu</title>
+    <meta charset="UTF-8" />
+    <title>Menu Display</title>
     <style>
         body {
-            font-family: Arial;
-            margin: 40px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
         }
 
-        .header {
-            background-color: #e5f3ff;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 1.2em;
+        /* Single gray box container for each step */
+        .item-container {
+            background-color: #ebeaea;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            overflow: hidden;
+            padding: 4px;
         }
 
-        .module {
-            background-color: #ffffc2;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .step-info {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f0f8ff;
-            border-left: 5px solid #0077b6;
-            font-size: 0.95em;
-        }
-
+        /* Each food item inside the container */
         .item {
-            background-color: #006666;
+            background-color: teal;
             color: white;
-            padding: 10px;
-            margin-bottom: 2px;
-        }
-
-        .desc {
-            background-color: #f2f2f2;
-            padding: 10px;
-            font-style: italic;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-        .desc2 {
-            background-color: #f2f2f2;
-            padding: 10px;
             
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-
-        .result-count {
-            margin-bottom: 10px;
-            font-weight: normal;
-        }
-
-        .section {
-            margin-bottom: 40px;
-        }
-
-        .sub-section {
-            background-color: #eef;
-            padding: 10px;
+            padding: 8px 10px;
             margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        /* Remove top margin on first item to avoid extra space */
+        .item-container .item:first-child {
+            margin-top: 0;
         }
 
-        .sub-title {
-            font-weight: bold;
-            margin-bottom: 5px;
+        .desc2 {
+            padding: 5px 10px 10px 10px;
+            font-size: 0.95em;
+            color: #333;
+            margin-top: 0;
+        }
+
+        em {
+            color: #555;
+            font-style: italic;
+        }
+
+        h2 {
+            font-size: 1.3em;
+            margin-top: 30px;
+            color: #333;
         }
     </style>
 </head>
 <body>
 
-    <!-- STEP A -->
-    <div class="section">
-        <div class="module">A.	All contents of the XML document in the format shown below:</div>
-        <div class="result-count" id="resultCountA"></div>
-        <div id="stepA"></div>
-    </div>
+    <!--<h2>-->
+        <!--3.	Create an HTML document that will display the following:-->
+        
+    <!--</h2>-->
+    <h2>a.	All contents of the XML document in the format shown below:</h2>
+    <!--<h2>Step A: All Food Items</h2>-->
+    <div id="resultCountA"></div>
+    <div id="stepA"></div>
 
-    <!-- STEP B -->
-    <div class="section">
-        <div class="module">B.	Food whose price is greater than $5.00</div>
-        <div class="result-count" id="resultCountB"></div>
-        <div id="stepB"></div>
-    </div>
+    <h2>b.	Food whose price is greater than $5.00</h2>
+    <!--<h2>Step B: Food Items Over $5.00</h2>-->
+    <div id="resultCountB"></div>
+    <div id="stepB"></div>
 
-    <!-- STEP C -->
-    <div class="section">
-        <div class="module">C. Food whose calorie does not exceed 700 cal.</div>
-        <div class="result-count" id="resultCountC2"></div>
-        <div id="stepC2"></div>
-    </div>
+    <h2>c.	From B, Food whose calorie does not exceed 700 cal.</h2>
+    <!--<h2>Step C: From B, with Calories ≤ 700</h2>-->
+    <div id="resultCountC2"></div>
+    <div id="stepC2"></div>
 
     <script>
         let foodsData = [];
@@ -117,38 +91,44 @@
                     foodsData.push({ name, price, description, calories });
                 }
 
-                // Display Step A
-                const stepADiv = document.getElementById('stepA');
-                document.getElementById('resultCountA').innerText ;
+                // Step A display
+                document.getElementById('resultCountA').textContent;
+                let stepAHTML = `<div class="item-container">`;
                 foodsData.forEach(item => {
-                    stepADiv.innerHTML += `
+                    stepAHTML += `
                             <div class="item"><strong>${item.name}</strong> - $${item.price.toFixed(2)}</div>
-                            <div class="desc2">${item.description} <em>(${item.calories} calories per serving)</em> </div>
+                            <div class="desc2">${item.description} <em>(${item.calories} calories per serving)</em></div>
                         `;
                 });
+                stepAHTML += `</div>`;
+                document.getElementById('stepA').innerHTML = stepAHTML;
 
-                // Step B: Filter price > $5.00
-                const stepB = foodsData.filter(item => item.price > 5.00);
-                const stepBDiv = document.getElementById('stepB');
-                document.getElementById('resultCountB').innerText;
-                stepB.forEach(item => {
-                    stepBDiv.innerHTML += `
+                // Step B filter price > 5.00
+                const stepBData = foodsData.filter(item => item.price > 5.00);
+                document.getElementById('resultCountB').textContent;
+                let stepBHTML = `<div class="item-container">`;
+                stepBData.forEach(item => {
+                    stepBHTML += `
                             <div class="item"><strong>${item.name}</strong> - $${item.price.toFixed(2)}</div>
-                            <div class="desc2">${item.description} <em>(${item.calories} calories per serving)</em> </div>
+                            <div class="desc2">${item.description} <em>(${item.calories} calories per serving)</em></div>
                         `;
                 });
+                stepBHTML += `</div>`;
+                document.getElementById('stepB').innerHTML = stepBHTML;
 
-                // Step C: From Step B, calories ≤ 700
-                const stepC1 = stepB.filter(item => item.calories <= 700);
-                const stepC2Div = document.getElementById('stepC2');
-                document.getElementById('resultCountC2').innerText;
-                stepC1.forEach(item => {
-                    stepC2Div.innerHTML += `
-                           <div class="item"><strong>${item.name}</strong> - $${item.price.toFixed(2)}</div>
-                            <div class="desc2">${item.description} <em>(${item.calories} calories per serving)</em> </div>
-                            
+                // Step C filter calories ≤ 700 from Step B
+                const stepCData = stepBData.filter(item => item.calories <= 700);
+                document.getElementById('resultCountC2').textContent;
+                let stepCHTML = `<div class="item-container">`;
+                stepCData.forEach(item => {
+                    stepCHTML += `
+                            <div class="item"><strong>${item.name}</strong> - $${item.price.toFixed(2)}</div>
+                            <div class="desc2">${item.description} <em>(${item.calories} calories per serving)</em></div>
                         `;
                 });
+                stepCHTML += `</div>`;
+                document.getElementById('stepC2').innerHTML = stepCHTML;
+
             });
     </script>
 
